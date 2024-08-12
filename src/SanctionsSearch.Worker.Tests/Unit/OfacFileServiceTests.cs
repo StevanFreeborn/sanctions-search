@@ -1,7 +1,3 @@
-using Moq;
-
-using RichardSzalay.MockHttp;
-
 namespace SanctionsSearch.Worker.Tests.Unit;
 
 public class OfacFileServiceTests

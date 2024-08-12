@@ -1,5 +1,5 @@
 {
   "editor.formatOnSave": true,
   "dotnet.defaultSolution": "src/SanctionsSearch.sln",
-  "cSpell.words": ["OFAC"]
+  "cSpell.words": ["OFAC", "Szalay"]
 }

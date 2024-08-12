@@ -16,7 +16,7 @@ try
   Log.Information("Starting Sanctions Search worker");
 
   var builder = Host.CreateApplicationBuilder(args);
-  
+
   builder.Logging.ClearProviders();
   builder.Logging.AddSerilog();
   builder.Services.AddHostedService<Worker>();
