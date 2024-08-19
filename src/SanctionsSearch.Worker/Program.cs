@@ -1,3 +1,12 @@
+using SanctionsSearch.Worker.Persistence;
+using SanctionsSearch.Worker.Setup;
+
+if (EF.IsDesignTime)
+{
+  Host.CreateDefaultBuilder().Build().Run();
+  return;
+}
+
 Log.Logger = new LoggerConfiguration()
   .Enrich.WithProperty("Application", "SanctionsSearch.Worker")
   .Enrich.WithEnvironmentName()
@@ -19,9 +28,25 @@ try
 
   builder.Logging.ClearProviders();
   builder.Logging.AddSerilog();
+
+  builder.Services.ConfigureOptions<OfacFileServiceOptionsSetup>();
+  builder.Services.ConfigureOptions<DbOptionsSetup>();
+
+  builder.Services.AddDbContext<AppDbContext>();
   builder.Services.AddHostedService<Worker>();
 
   var host = builder.Build();
+
+  using var scope = host.Services.CreateScope();
+  var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+  var pendingMigrations = await context.Database.GetPendingMigrationsAsync();
+
+  if (pendingMigrations.Any())
+  {
+    Log.Information("Applying pending migrations");
+    await context.Database.MigrateAsync();
+  }
+
   host.Run();
 
   Log.Information("Stopping Sanctions Search worker");
