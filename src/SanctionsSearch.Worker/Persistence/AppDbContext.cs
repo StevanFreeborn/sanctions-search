@@ -15,9 +15,9 @@ class AppDbContext(IOptionsSnapshot<DbOptions> options) : DbContext, IDisposable
 
   protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
   {
-    var folder = Environment.SpecialFolder.LocalApplicationData;
-    var path = Environment.GetFolderPath(folder);
-    var dataDir = Path.Combine(path, "SanctionsSearch", "Data");
+    var folder = Assembly.GetExecutingAssembly().Location;
+    var path = Path.GetDirectoryName(folder);
+    var dataDir = Path.Combine(path!, "Data");
 
     if (Directory.Exists(dataDir) == false)
     {
