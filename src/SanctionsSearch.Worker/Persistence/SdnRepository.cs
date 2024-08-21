@@ -1,7 +1,7 @@
 namespace SanctionsSearch.Worker.Persistence;
 
 class SdnRepository(
-  AppDbContext dbContext,
+  DbContext dbContext,
   ILogger<SdnRepository> logger
 ) : EfRepository<Sdn>(dbContext, logger), ISdnRepository
 {

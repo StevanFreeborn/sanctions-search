@@ -1,6 +1,3 @@
-
-using FluentResults;
-
 namespace SanctionsSearch.Worker.Services;
 
 class OfacFileService(

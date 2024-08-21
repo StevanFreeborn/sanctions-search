@@ -1,6 +1,3 @@
-using System.Net;
-using System.Text;
-
 namespace SanctionsSearch.Worker.Tests.Unit;
 
 public class OfacFileServiceTests

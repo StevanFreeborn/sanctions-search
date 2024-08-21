@@ -2,10 +2,10 @@ namespace SanctionsSearch.Worker.Persistence;
 
 class EfRepository<T> : IRepository<T> where T : Entity
 {
-  protected readonly AppDbContext _context;
+  protected readonly DbContext _context;
   protected readonly ILogger<EfRepository<T>> _logger;
 
-  public EfRepository(AppDbContext context, ILogger<EfRepository<T>> logger)
+  public EfRepository(DbContext context, ILogger<EfRepository<T>> logger)
   {
     _context = context;
     _logger = logger;

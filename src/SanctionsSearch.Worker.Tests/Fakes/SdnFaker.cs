@@ -1,5 +1,3 @@
-using Bogus;
-
 namespace SanctionsSearch.Worker.Tests.Fakes;
 
 class SdnFaker : Faker<Sdn>

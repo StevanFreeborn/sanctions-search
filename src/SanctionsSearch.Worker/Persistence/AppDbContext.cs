@@ -1,8 +1,9 @@
 namespace SanctionsSearch.Worker.Persistence;
 
-class AppDbContext(DbOptions options) : DbContext
+class AppDbContext(DbOptions options, TimeProvider timeProvider) : DbContext
 {
   private readonly DbOptions _options = options;
+  private readonly TimeProvider _timeProvider = timeProvider;
   private SqliteConnection? _connection;
   internal string DatabasePath { get; private set; } = string.Empty;
   public DbSet<Sdn> Sdns { get; set; } = default!;
@@ -32,8 +33,7 @@ class AppDbContext(DbOptions options) : DbContext
 
   public async override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
   {
-    // TODO: Use TimeProvider instead of DateTime.UtcNow
-    var now = DateTime.UtcNow;
+    var now = _timeProvider.GetUtcNow().DateTime;
 
     foreach (var changedEntity in ChangeTracker.Entries())
     {
