@@ -73,19 +73,20 @@ public class SdnRepositoryTests : IAsyncLifetime
   [Fact]
   public async Task Find_WithPredicate_ShouldReturnEntitiesMatchingPredicate()
   {
-    var sdn1 = _sdnFaker.Generate();
-    var sdn2 = _sdnFaker.Generate();
-    var sdn3 = _sdnFaker.Generate();
+    var sdns = _sdnFaker.Generate(3);
 
-    await _sdnRepository.Upsert(sdn1);
-    await _sdnRepository.Upsert(sdn2);
-    await _sdnRepository.Upsert(sdn3);
+    foreach (var sdn in sdns)
+    {
+      await _sdnRepository.Upsert(sdn);
+    }
+
     await _context.SaveChangesAsync();
 
-    var result = await _sdnRepository.Find(x => x.Id == sdn2.Id);
+    var target = sdns[0];
+    var result = await _sdnRepository.Find(x => x.Id == target.Id);
 
     result.Should().HaveCount(1);
-    result.First().Should().BeEquivalentTo(sdn2);
+    result.First().Should().BeEquivalentTo(target);
   }
 
   public async Task InitializeAsync()
