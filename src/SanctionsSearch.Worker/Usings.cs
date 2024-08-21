@@ -10,3 +10,9 @@ global using Serilog.Exceptions;
 global using Serilog.Formatting.Compact;
 
 global using Microsoft.EntityFrameworkCore;
+
+global using System.Linq.Expressions;
+
+global using System.Reflection;
+
+global using Microsoft.Data.Sqlite;

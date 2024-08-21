@@ -1,8 +1,7 @@
 namespace SanctionsSearch.Worker.Models;
 
-class Sdn
+class Sdn : Entity
 {
-  public int Id { get; set; }
   public string Name { get; set; } = string.Empty;
   public string Type { get; set; } = string.Empty;
   public string Program { get; set; } = string.Empty;

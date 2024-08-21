@@ -1,9 +1,8 @@
 namespace SanctionsSearch.Worker.Models;
 
-class Alias
+class Alias : Entity
 {
   public int SdnId { get; set; }
-  public int Id { get; set; }
   public string Type { get; set; } = string.Empty;
   public string Name { get; set; } = string.Empty;
   public string Remarks { get; set; } = string.Empty;

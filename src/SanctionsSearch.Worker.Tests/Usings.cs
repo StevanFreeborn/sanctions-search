@@ -9,3 +9,5 @@ global using RichardSzalay.MockHttp;
 
 global using SanctionsSearch.Worker.Services;
 global using SanctionsSearch.Worker.Options;
+global using SanctionsSearch.Worker.Models;
+global using SanctionsSearch.Worker.Persistence;

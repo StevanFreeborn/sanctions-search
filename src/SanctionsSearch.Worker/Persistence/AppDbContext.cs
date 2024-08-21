@@ -1,13 +1,10 @@
-using System.Reflection;
-
-using Microsoft.Data.Sqlite;
-
 namespace SanctionsSearch.Worker.Persistence;
 
-class AppDbContext(IOptionsSnapshot<DbOptions> options) : DbContext, IDisposable
+class AppDbContext(DbOptions options) : DbContext
 {
-  private readonly IOptionsSnapshot<DbOptions> _options = options;
+  private readonly DbOptions _options = options;
   private SqliteConnection? _connection;
+  internal string DatabasePath { get; private set; } = string.Empty;
   public DbSet<Sdn> Sdns { get; set; } = default!;
   public DbSet<Address> Addresses { get; set; } = default!;
   public DbSet<Alias> Aliases { get; set; } = default!;
@@ -24,7 +21,8 @@ class AppDbContext(IOptionsSnapshot<DbOptions> options) : DbContext, IDisposable
       Directory.CreateDirectory(dataDir);
     }
 
-    var dbPath = Path.Combine(dataDir, _options.Value.DatabaseName);
+    var dbPath = Path.Combine(dataDir, _options.DatabaseName);
+    DatabasePath = dbPath;
 
     _connection = new SqliteConnection($"Data Source={dbPath}");
     _connection.Open();
@@ -32,9 +30,40 @@ class AppDbContext(IOptionsSnapshot<DbOptions> options) : DbContext, IDisposable
     optionsBuilder.UseSqlite(_connection);
   }
 
-  public override void Dispose()
+  public async override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
   {
-    _connection?.Dispose();
-    base.Dispose();
+    // TODO: Use TimeProvider instead of DateTime.UtcNow
+    var now = DateTime.UtcNow;
+
+    foreach (var changedEntity in ChangeTracker.Entries())
+    {
+      if (changedEntity.Entity is Entity entity)
+      {
+        switch (changedEntity.State)
+        {
+          case EntityState.Added:
+            entity.CreatedAt = now;
+            entity.UpdatedAt = now;
+            break;
+
+          case EntityState.Modified:
+            Entry(entity).Property(x => x.CreatedAt).IsModified = false;
+            entity.UpdatedAt = now;
+            break;
+        }
+      }
+    }
+
+    return await base.SaveChangesAsync(cancellationToken);
+  }
+
+  public async override ValueTask DisposeAsync()
+  {
+    if (_connection is not null)
+    {
+      await _connection.DisposeAsync();
+    }
+
+    await base.DisposeAsync();
   }
 }

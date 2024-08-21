@@ -31,6 +31,7 @@ try
 
   builder.Services.ConfigureOptions<OfacFileServiceOptionsSetup>();
   builder.Services.ConfigureOptions<DbOptionsSetup>();
+  builder.Services.AddScoped(rs => rs.GetRequiredService<IOptionsSnapshot<DbOptions>>().Value);
 
   builder.Services.AddDbContext<AppDbContext>();
   builder.Services.AddHostedService<Worker>();
