@@ -1,4 +1,4 @@
-namespace SanctionsSearch.Worker.Tests.Fakes;
+namespace SanctionsSearch.Worker.Tests.Faker;
 
 class SdnFaker : Faker<Sdn>
 {
