@@ -7,8 +7,7 @@ public class AliasRepositoryTests : RepositoryTest
 
   public AliasRepositoryTests()
   {
-    var loggerFactory = LoggerFactory.Create(builder => builder.ClearProviders());
-    _repository = new(_context, new Logger<AliasRepository>(loggerFactory));
+    _repository = new(_context, new Logger<AliasRepository>(_loggerFactory));
   }
 
   [Fact]

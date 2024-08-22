@@ -7,8 +7,7 @@ public class SdnRepositoryTests : RepositoryTest
 
   public SdnRepositoryTests()
   {
-    var loggerFactory = LoggerFactory.Create(builder => builder.ClearProviders());
-    _repository = new SdnRepository(_context, new Logger<SdnRepository>(loggerFactory));
+    _repository = new(_context, new Logger<SdnRepository>(_loggerFactory));
   }
 
   [Fact]

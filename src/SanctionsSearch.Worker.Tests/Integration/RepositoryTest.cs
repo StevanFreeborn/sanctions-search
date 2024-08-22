@@ -8,6 +8,7 @@ public class RepositoryTest : IAsyncLifetime
   protected readonly Mock<TimeProvider> _timeProvider = new();
   protected readonly DbContext _context;
   protected int SdnId => _sdn.Id;
+  protected readonly ILoggerFactory _loggerFactory = LoggerFactory.Create(builder => builder.ClearProviders());
 
   public RepositoryTest()
   {

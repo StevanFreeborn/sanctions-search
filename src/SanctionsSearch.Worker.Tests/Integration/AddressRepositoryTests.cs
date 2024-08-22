@@ -7,8 +7,7 @@ public class AddressRepositoryTests : RepositoryTest
 
   public AddressRepositoryTests()
   {
-    var loggerFactory = LoggerFactory.Create(builder => builder.ClearProviders());
-    _repository = new(_context, new Logger<AddressRepository>(loggerFactory));
+    _repository = new(_context, new Logger<AddressRepository>(_loggerFactory));
   }
 
   [Fact]

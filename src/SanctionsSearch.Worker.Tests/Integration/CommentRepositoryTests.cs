@@ -7,8 +7,7 @@ public class CommentRepositoryTests : RepositoryTest
 
   public CommentRepositoryTests()
   {
-    var loggerFactory = LoggerFactory.Create(builder => builder.ClearProviders());
-    _repository = new(_context, new Logger<CommentRepository>(loggerFactory));
+    _repository = new(_context, new Logger<CommentRepository>(_loggerFactory));
   }
 
   [Fact]
