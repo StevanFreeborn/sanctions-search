@@ -2,9 +2,12 @@ namespace SanctionsSearch.Worker.Tests.Faker;
 
 class SdnFaker : Faker<Sdn>
 {
+  public const int ReservedId = 1;
+  private readonly int _minimumId = ReservedId + 1;
+
   public SdnFaker()
   {
-    RuleFor(x => x.Id, f => f.Random.Int(1, int.MaxValue));
+    RuleFor(x => x.Id, f => f.Random.Int(_minimumId, int.MaxValue));
     RuleFor(x => x.Name, f => f.Person.FullName);
     RuleFor(x => x.Type, f => f.Lorem.Word());
     RuleFor(x => x.Program, f => f.Lorem.Word());

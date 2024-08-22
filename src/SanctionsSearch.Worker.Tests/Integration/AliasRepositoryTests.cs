@@ -18,6 +18,7 @@ public class AliasRepositoryTests : RepositoryTest
     _timeProvider.Setup(x => x.GetUtcNow()).Returns(now);
 
     var entity = _faker.Generate();
+    entity.SdnId = SdnId;
 
     await _repository.Upsert(entity);
     await _context.SaveChangesAsync();
@@ -38,6 +39,7 @@ public class AliasRepositoryTests : RepositoryTest
     _timeProvider.Setup(x => x.GetUtcNow()).Returns(createdTimeStamp);
 
     var entity = _faker.Generate();
+    entity.SdnId = SdnId;
 
     // Insert the entity
     await _repository.Upsert(entity);
@@ -72,6 +74,7 @@ public class AliasRepositoryTests : RepositoryTest
 
     foreach (var entity in entities)
     {
+      entity.SdnId = SdnId;
       await _repository.Upsert(entity);
     }
 
