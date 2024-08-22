@@ -1,29 +1,29 @@
 namespace SanctionsSearch.Worker.Tests.Unit;
 
-public class SdnRepositoryTests
+public class AliasRepositoryTests
 {
   private readonly Mock<DbContext> _context = new();
-  private readonly Mock<ILogger<SdnRepository>> _logger = new();
-  private readonly SdnFaker _faker = new();
-  private readonly SdnRepository _repository;
+  private readonly Mock<ILogger<AliasRepository>> _logger = new();
+  private readonly AliasFaker _faker = new();
+  private readonly AliasRepository _repository;
 
-  public SdnRepositoryTests()
+  public AliasRepositoryTests()
   {
-    _repository = new SdnRepository(_context.Object, _logger.Object);
+    _repository = new AliasRepository(_context.Object, _logger.Object);
   }
 
   [Fact]
   public async Task Upsert_WhenExceptionIsThrown_ItShouldLogError()
   {
     var entity = _faker.Generate();
-    var mockSet = new Mock<DbSet<Sdn>>();
+    var mockSet = new Mock<DbSet<Alias>>();
 
     mockSet
       .Setup(x => x.FindAsync(entity.Id))
       .Throws<Exception>();
 
     _context
-      .Setup(x => x.Set<Sdn>())
+      .Setup(x => x.Set<Alias>())
       .Returns(mockSet.Object);
 
     await _repository.Upsert(entity);
@@ -43,7 +43,7 @@ public class SdnRepositoryTests
   public async Task Find_WhenExceptionIsThrown_ItShouldReturnEmptyListAndLogError()
   {
     _context
-      .Setup(x => x.Set<Sdn>())
+      .Setup(x => x.Set<Alias>())
       .Throws<Exception>();
 
     var result = await _repository.Find(x => x.Id == 1);

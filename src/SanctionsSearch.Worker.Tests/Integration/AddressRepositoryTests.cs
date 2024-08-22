@@ -1,14 +1,14 @@
 namespace SanctionsSearch.Worker.Tests.Integration;
 
-public class SdnRepositoryTests : RepositoryTest
+public class AddressRepositoryTests : RepositoryTest
 {
-  private readonly SdnRepository _repository;
-  private readonly SdnFaker _faker = new();
+  private readonly AddressRepository _repository;
+  private readonly AddressFaker _faker = new();
 
-  public SdnRepositoryTests()
+  public AddressRepositoryTests()
   {
     var loggerFactory = LoggerFactory.Create(builder => builder.ClearProviders());
-    _repository = new SdnRepository(_context, new Logger<SdnRepository>(loggerFactory));
+    _repository = new(_context, new Logger<AddressRepository>(loggerFactory));
   }
 
   [Fact]
@@ -22,7 +22,7 @@ public class SdnRepositoryTests : RepositoryTest
     await _repository.Upsert(entity);
     await _context.SaveChangesAsync();
 
-    var result = await _context.Set<Sdn>().FindAsync(entity.Id);
+    var result = await _context.Set<Address>().FindAsync(entity.Id);
 
     result.Should().BeEquivalentTo(entity);
     result!.CreatedAt.Should().Be(now.DateTime);
@@ -44,7 +44,7 @@ public class SdnRepositoryTests : RepositoryTest
     await _context.SaveChangesAsync();
 
     // Assert the entity was created
-    var createdEntity = await _context.Set<Sdn>().FindAsync(entity.Id);
+    var createdEntity = await _context.Set<Address>().FindAsync(entity.Id);
 
     createdEntity.Should().BeEquivalentTo(entity);
     createdEntity!.CreatedAt.Should().Be(createdTimeStamp.DateTime);
@@ -53,12 +53,12 @@ public class SdnRepositoryTests : RepositoryTest
     _timeProvider.Setup(x => x.GetUtcNow()).Returns(updatedTimeStamp);
 
     // Update the entity
-    entity.Name = "Updated";
+    entity.StreetAddress = "Updated";
     await _repository.Upsert(entity);
     await _context.SaveChangesAsync();
 
     // Assert the entity was updated
-    var result = await _context.Set<Sdn>().FindAsync(entity.Id);
+    var result = await _context.Set<Address>().FindAsync(entity.Id);
 
     result.Should().BeEquivalentTo(entity);
     result!.CreatedAt.Should().BeSameDateAs(createdTimeStamp.DateTime);
