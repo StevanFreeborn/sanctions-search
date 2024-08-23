@@ -14,7 +14,7 @@ public class AddressRepositoryTests : RepositoryTest
   public async Task Upsert_WithNewEntity_ShouldAddEntityToDatabase()
   {
     var now = DateTimeOffset.UtcNow;
-    _timeProvider.Setup(x => x.GetUtcNow()).Returns(now);
+    _timeProviderMock.Setup(x => x.GetUtcNow()).Returns(now);
 
     var entity = _faker.Generate();
     entity.SdnId = SdnId;
@@ -35,7 +35,7 @@ public class AddressRepositoryTests : RepositoryTest
     var createdTimeStamp = DateTimeOffset.UtcNow;
     var updatedTimeStamp = createdTimeStamp.AddSeconds(2);
 
-    _timeProvider.Setup(x => x.GetUtcNow()).Returns(createdTimeStamp);
+    _timeProviderMock.Setup(x => x.GetUtcNow()).Returns(createdTimeStamp);
 
     var entity = _faker.Generate();
     entity.SdnId = SdnId;
@@ -51,7 +51,7 @@ public class AddressRepositoryTests : RepositoryTest
     createdEntity!.CreatedAt.Should().Be(createdTimeStamp.DateTime);
     createdEntity.UpdatedAt.Should().Be(createdTimeStamp.DateTime);
 
-    _timeProvider.Setup(x => x.GetUtcNow()).Returns(updatedTimeStamp);
+    _timeProviderMock.Setup(x => x.GetUtcNow()).Returns(updatedTimeStamp);
 
     // Update the entity
     entity.StreetAddress = "Updated";

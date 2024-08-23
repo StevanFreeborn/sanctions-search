@@ -14,5 +14,7 @@ class Sdn : Entity
   public string VesselOwner { get; set; } = string.Empty;
   public string Remarks { get; set; } = string.Empty;
 
+  public virtual ICollection<Address> Addresses { get; set; } = [];
   public virtual ICollection<Alias> Aliases { get; set; } = [];
+  public virtual ICollection<Comment> Comments { get; set; } = [];
 }

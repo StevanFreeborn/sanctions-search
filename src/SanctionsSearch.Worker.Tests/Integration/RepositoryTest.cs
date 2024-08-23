@@ -1,38 +1,25 @@
 namespace SanctionsSearch.Worker.Tests.Integration;
 
-public class RepositoryTest : IAsyncLifetime
+public class RepositoryTest : DatabaseTest, IAsyncLifetime
 {
-  private readonly AppDbContext _appDbContext;
   private readonly SdnFaker _faker = new();
   private readonly Sdn _sdn;
-  protected readonly Mock<TimeProvider> _timeProvider = new();
-  protected readonly DbContext _context;
   protected int SdnId => _sdn.Id;
-  protected readonly ILoggerFactory _loggerFactory = LoggerFactory.Create(builder => builder.ClearProviders());
 
   public RepositoryTest()
   {
-    var options = new DbOptions { DatabaseName = $"{Guid.NewGuid()}.db" };
-    var context = new AppDbContext(options, _timeProvider.Object);
-
-    _appDbContext = context;
-    _context = context;
     _sdn = _faker.Generate();
     _sdn.Id = SdnFaker.ReservedId;
   }
 
-  public async Task InitializeAsync()
+  public override async Task InitializeAsync()
   {
-    await _context.Database.MigrateAsync();
+    await base.InitializeAsync();
     await _context.Set<Sdn>().AddAsync(_sdn);
   }
 
-  public async Task DisposeAsync()
+  public override async Task DisposeAsync()
   {
-    await _appDbContext.DisposeAsync();
-
-    SqliteConnection.ClearAllPools();
-
-    File.Delete(_appDbContext.DatabasePath);
+    await base.DisposeAsync();
   }
 }

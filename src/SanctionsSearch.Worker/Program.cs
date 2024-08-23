@@ -63,14 +63,14 @@ class Program
     builder.Services.AddScoped(rs => rs.GetRequiredService<IOptionsSnapshot<DbOptions>>().Value);
 
     builder.Services.AddSingleton(TimeProvider.System);
-    builder.Services.AddScoped<IOfacFileService, OfacFileService>();
+    // builder.Services.AddScoped<IOfacFileService, OfacFileService>();
 
     builder.Services.AddScoped<ISdnRepository, SdnRepository>();
     builder.Services.AddScoped<IAddressRepository, AddressRepository>();
     builder.Services.AddScoped<IAliasRepository, AliasRepository>();
     builder.Services.AddScoped<ICommentRepository, CommentRepository>();
     builder.Services.AddScoped<IUnitOfWork, EfUnitOfWork>();
-    builder.Services.AddDbContext<AppDbContext>();
+    builder.Services.AddDbContext<DbContext, AppDbContext>();
 
     builder.Services.AddHostedService<Worker>();
 
