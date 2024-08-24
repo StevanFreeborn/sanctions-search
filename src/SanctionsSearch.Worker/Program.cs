@@ -59,6 +59,8 @@ class Program
     builder.Logging.AddSerilog();
 
     builder.Services.ConfigureOptions<OfacFileServiceOptionsSetup>();
+    builder.Services.AddScoped(rs => rs.GetRequiredService<IOptionsSnapshot<OfacFileServiceOptions>>().Value);
+
     builder.Services.ConfigureOptions<DbOptionsSetup>();
     builder.Services.AddScoped(rs => rs.GetRequiredService<IOptionsSnapshot<DbOptions>>().Value);
 

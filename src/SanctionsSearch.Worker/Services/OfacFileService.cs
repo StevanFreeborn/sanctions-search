@@ -3,12 +3,12 @@ namespace SanctionsSearch.Worker.Services;
 class OfacFileService(
   HttpClient client,
   ILogger<OfacFileService> logger,
-  IOptionsSnapshot<OfacFileServiceOptions> options
+  OfacFileServiceOptions options
 ) : IOfacFileService
 {
   private readonly HttpClient _client = client ?? throw new ArgumentNullException(nameof(client));
   private readonly ILogger<OfacFileService> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-  private readonly OfacFileServiceOptions _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
+  private readonly OfacFileServiceOptions _options = options ?? throw new ArgumentNullException(nameof(options));
   private async Task<Result<Stream>> GetFileAsync(Uri fileUri)
   {
     try
@@ -19,7 +19,7 @@ class OfacFileService(
 
       if (response.IsSuccessStatusCode is false)
       {
-        _logger.LogError("Failed to download file from {FileUri}", fileUri);
+        _logger.LogError("Failed to download file from {FileUri} with Status Code: {StatusCode}", fileUri, response.StatusCode);
         return Result.Fail($"Failed to download file from {fileUri}");
       }
 
