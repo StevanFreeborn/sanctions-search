@@ -19,8 +19,9 @@ class DatabaseMaintainer(
       _logger.LogError("Failed to get SDN file from OFAC.");
       return;
     }
-
     using var stream = result.Value;
+
+    // TODO: Abstract this logic to wrapper around CsvHelper
     using var reader = new StreamReader(stream);
     var config = new CsvConfiguration(CultureInfo.InvariantCulture) { HasHeaderRecord = false };
     using var csv = new CsvReader(reader, config);
