@@ -4,11 +4,28 @@ class DatabaseMaintainer(
   IUnitOfWork unitOfWork,
   IOfacFileService ofacFileService,
   ILogger<DatabaseMaintainer> logger
-) : IDatabaseMaintainer
+) : IDatabaseMaintainer, IDisposable
 {
   private readonly IUnitOfWork _unitOfWork = unitOfWork;
   private readonly IOfacFileService _ofacFileService = ofacFileService;
   private readonly ILogger<DatabaseMaintainer> _logger = logger;
+  private readonly CsvConfiguration _csvConfig = new(CultureInfo.InvariantCulture) { HasHeaderRecord = false };
+  private readonly List<CsvReader> _csvReaders = [];
+  private readonly List<StreamReader> _streamReaders = [];
+
+  private IEnumerable<T> GetRecordsFromStream<T>(Stream stream)
+  {
+    var reader = new StreamReader(stream);
+    var csv = new CsvReader(reader, _csvConfig);
+
+    csv.Context.RegisterClassMap<SdnMap>();
+    csv.Context.RegisterClassMap<AddressMap>();
+
+    _streamReaders.Add(reader);
+    _csvReaders.Add(csv);
+
+    return csv.GetRecords<T>();
+  }
 
   public async Task BuildSdnTableAsync()
   {
@@ -19,14 +36,9 @@ class DatabaseMaintainer(
       _logger.LogError("Failed to get SDN file from OFAC.");
       return;
     }
-    using var stream = result.Value;
 
-    // TODO: Abstract this logic to wrapper around CsvHelper
-    using var reader = new StreamReader(stream);
-    var config = new CsvConfiguration(CultureInfo.InvariantCulture) { HasHeaderRecord = false };
-    using var csv = new CsvReader(reader, config);
-    csv.Context.RegisterClassMap<SdnMap>();
-    var records = csv.GetRecords<Sdn>();
+    using var stream = result.Value;
+    var records = GetRecordsFromStream<Sdn>(stream);
 
     foreach (var record in records)
     {
@@ -36,9 +48,33 @@ class DatabaseMaintainer(
     await _unitOfWork.SaveChangesAsync();
   }
 
-  public Task BuildAddressTableAsync()
+  public async Task BuildAddressTableAsync()
   {
-    throw new NotImplementedException();
+    var result = await _ofacFileService.GetAddressFileAsync();
+
+    if (result.IsFailed)
+    {
+      _logger.LogError("Failed to get Address file from OFAC.");
+      return;
+    }
+
+    using var stream = result.Value;
+    var records = GetRecordsFromStream<Address>(stream);
+
+    foreach (var record in records)
+    {
+      var sdn = await _unitOfWork.Sdns.Find(s => s.Id == record.SdnId);
+
+      if (sdn.Count() is 0)
+      {
+        _logger.LogWarning("Address's SDN with ID {Id} not found. Skipping address.", record.SdnId);
+        continue;
+      }
+
+      await _unitOfWork.Addresses.Upsert(record);
+    }
+
+    await _unitOfWork.SaveChangesAsync();
   }
 
   public Task BuildCommentTableAsync()
@@ -49,5 +85,11 @@ class DatabaseMaintainer(
   public Task BuiltAliasTableAsync()
   {
     throw new NotImplementedException();
+  }
+
+  public void Dispose()
+  {
+    _csvReaders.ForEach(csv => csv.Dispose());
+    _streamReaders.ForEach(reader => reader.Dispose());
   }
 }

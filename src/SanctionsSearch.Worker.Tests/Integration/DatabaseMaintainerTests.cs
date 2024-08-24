@@ -2,6 +2,10 @@ namespace SanctionsSearch.Worker.Tests.Integration;
 
 public class DatabaseMaintainerTests : DatabaseTest
 {
+  private const string TestAddressCsv = """
+    306,201,"Dai-Ichi Bldg. 6th Floor, 10-2 Nihombashi, 2-chome, Chuo-ku","Tokyo 103","Japan",-0- 
+    306,202,"Federico Boyd Avenue & 51 Street","Panama City","Panama",-0-
+  """;
   private readonly MockHttpMessageHandler _mockHttp = new();
   private readonly OfacFileServiceOptionsFaker _ofacFileServiceOptionsFaker = new();
   private readonly OfacFileServiceOptions _ofacFileServiceOptions;
@@ -81,6 +85,73 @@ public class DatabaseMaintainerTests : DatabaseTest
       Remarks = "DOB 15 Mar 1963; POB Alexandria, Egypt.",
       CreatedAt = now.DateTime,
       UpdatedAt = now.DateTime
+    });
+  }
+
+  [Fact]
+  public async Task BuildAddressTableAsync_WhenCalledAndNoSdnRecordFound_ItShouldNotAddAddressCsvRecordsToDatabase()
+  {
+    var testStream = CreateCsvStream(TestAddressCsv);
+
+    _mockHttp
+      .When(_ofacFileServiceOptions.GetAddressFileUri().ToString())
+      .Respond("text/csv", testStream);
+
+    await _databaseMaintainer.BuildAddressTableAsync();
+
+    var addresses = await _context.Set<Address>().ToListAsync();
+
+    addresses.Should().BeEmpty();
+  }
+
+  [Fact]
+  public async Task BuildAddressTableAsync_WhenCalledAndSdnRecordFound_ItShouldAddAddressCsvRecordsToDatabase()
+  {
+    var testStream = CreateCsvStream(TestAddressCsv);
+
+    _mockHttp
+      .When(_ofacFileServiceOptions.GetAddressFileUri().ToString())
+      .Respond("text/csv", testStream);
+
+    var now = DateTimeOffset.UtcNow;
+
+    _timeProviderMock
+      .Setup(x => x.GetUtcNow())
+      .Returns(now);
+
+    var sdn = new Sdn() { Id = 306 };
+
+    await _context.Set<Sdn>().AddAsync(sdn);
+    await _context.SaveChangesAsync();
+
+    await _databaseMaintainer.BuildAddressTableAsync();
+
+    var addresses = await _context.Set<Address>().ToListAsync();
+
+    addresses.Should().BeEquivalentTo(new[]
+    {
+      new Address()
+      {
+        SdnId = sdn.Id,
+        Id = 201,
+        StreetAddress = "Dai-Ichi Bldg. 6th Floor, 10-2 Nihombashi, 2-chome, Chuo-ku",
+        CityProvincePostal = "Tokyo 103",
+        Country = "Japan",
+        CreatedAt = now.DateTime,
+        UpdatedAt = now.DateTime,
+        Sdn = sdn
+      },
+      new Address()
+      {
+        SdnId = sdn.Id,
+        Id = 202,
+        StreetAddress = "Federico Boyd Avenue & 51 Street",
+        CityProvincePostal = "Panama City",
+        Country = "Panama",
+        CreatedAt = now.DateTime,
+        UpdatedAt = now.DateTime,
+        Sdn = sdn
+      }
     });
   }
 }
