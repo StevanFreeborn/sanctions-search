@@ -17,11 +17,14 @@ public class DatabaseWorker(
 
     await UpdateDatabase();
 
+    using var scope = _serviceScopeFactory.CreateScope();
+    var dbOptions = scope.ServiceProvider.GetRequiredService<DbOptions>();
+
     _timer = _timeProvider.CreateTimer(
       callback: async _ => await UpdateDatabase(),
       state: null,
-      dueTime: TimeSpan.FromHours(1),
-      period: TimeSpan.FromHours(1)
+      dueTime: TimeSpan.FromHours(dbOptions.RefreshIntervalInHours),
+      period: TimeSpan.FromHours(dbOptions.RefreshIntervalInHours)
     );
   }
 
