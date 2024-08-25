@@ -10,9 +10,10 @@ public class EfUnitOfWorkTests : DatabaseTest
 
   public EfUnitOfWorkTests()
   {
-    var logger = LoggerFactory.Create(c => c.ClearProviders());
+    var loggerFactory = LoggerFactory.Create(c => c.ClearProviders());
+    var logger = loggerFactory.CreateLogger<EfUnitOfWork>();
 
-    _uow = new(_context, logger);
+    _uow = new(_context, logger, loggerFactory);
   }
 
   [Fact]
@@ -77,5 +78,15 @@ public class EfUnitOfWorkTests : DatabaseTest
     var action = () => _context.SaveChangesAsync();
 
     await action.Should().ThrowAsync<ObjectDisposedException>();
+  }
+
+  [Fact]
+  public void Dispose_WhenCalled_ItShouldDisposeContext()
+  {
+    _uow.Dispose();
+
+    var action = () => _context.SaveChangesAsync();
+
+    action.Should().ThrowAsync<ObjectDisposedException>();
   }
 }

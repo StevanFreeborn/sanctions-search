@@ -82,4 +82,33 @@ public class SdnRepositoryTests : RepositoryTest
     result.Should().HaveCount(1);
     result.First().Should().BeEquivalentTo(target);
   }
+
+  [Fact]
+  public async Task DeleteWhereAsync_WithPredicate_ShouldDeleteEntitiesMatchingPredicate()
+  {
+    var entities = _faker.Generate(3);
+    var entityIds = entities.Select(x => x.Id).ToList();
+
+    foreach (var entity in entities)
+    {
+      await _repository.Upsert(entity);
+    }
+
+    await _context.SaveChangesAsync();
+
+    var createdEntities = await _context.Set<Sdn>()
+      .Where(x => entityIds.Contains(x.Id))
+      .ToListAsync();
+
+    createdEntities.Should().HaveCount(3);
+
+    var target = entities[0];
+    await _repository.DeleteWhereAsync(x => entityIds.Contains(x.Id));
+
+    var remainingEntities = await _context.Set<Sdn>()
+      .Where(x => entityIds.Contains(x.Id))
+      .ToListAsync();
+
+    remainingEntities.Should().HaveCount(0);
+  }
 }

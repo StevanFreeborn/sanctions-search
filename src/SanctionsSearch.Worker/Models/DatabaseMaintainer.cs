@@ -167,6 +167,27 @@ class DatabaseMaintainer(
     _logger.LogInformation("Comment table built");
   }
 
+  public async Task CleanupTablesAsync()
+  {
+    _logger.LogInformation("Cleaning up tables");
+
+    var result = await _ofacFileService.GetSdnFileAsync();
+
+    if (result.IsFailed)
+    {
+      _logger.LogError("Failed to get SDN file from OFAC.");
+      return;
+    }
+
+    using var stream = result.Value;
+    var records = GetRecordsFromStream<Sdn>(stream);
+    var sdnIds = records.Select(s => s.Id).ToList();
+
+    await _unitOfWork.Sdns.DeleteWhereAsync(s => sdnIds.Contains(s.Id) == false);
+
+    _logger.LogInformation("Tables cleaned up");
+  }
+
   public void Dispose()
   {
     _csvReaders.ForEach(csv => csv.Dispose());

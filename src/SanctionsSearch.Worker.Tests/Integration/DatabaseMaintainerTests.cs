@@ -36,9 +36,11 @@ public class DatabaseMaintainerTests : DatabaseTest, IDisposable
       _ofacFileServiceOptions
     );
 
-    var uow = new EfUnitOfWork(_context, _loggerFactory);
-    var logger = _loggerFactory.CreateLogger<DatabaseMaintainer>();
-    _databaseMaintainer = new DatabaseMaintainer(uow, ofacFileService, logger);
+    var uowLogger = _loggerFactory.CreateLogger<EfUnitOfWork>();
+    var dbMaintainerLogger = _loggerFactory.CreateLogger<DatabaseMaintainer>();
+
+    var uow = new EfUnitOfWork(_context, uowLogger, _loggerFactory);
+    _databaseMaintainer = new DatabaseMaintainer(uow, ofacFileService, dbMaintainerLogger);
   }
 
   [Fact]

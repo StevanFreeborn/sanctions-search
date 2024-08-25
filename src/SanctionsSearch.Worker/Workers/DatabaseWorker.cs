@@ -52,6 +52,7 @@ public class DatabaseWorker(
       await databaseMaintainer.BuildAddressTableAsync();
       await databaseMaintainer.BuiltAliasTableAsync();
       await databaseMaintainer.BuildCommentTableAsync();
+      await databaseMaintainer.CleanupTablesAsync();
 
       _logger.LogInformation("Database updated");
     }

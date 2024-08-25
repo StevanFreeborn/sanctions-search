@@ -3,12 +3,13 @@ namespace SanctionsSearch.Worker.Tests.Unit;
 public class EfUnitOfWorkTests
 {
   private readonly Mock<DbContext> _contextMock = new();
+  private readonly Mock<ILogger<EfUnitOfWork>> _loggerMock = new();
   private readonly Mock<ILoggerFactory> _loggerFactoryMock = new();
   private readonly EfUnitOfWork _unitOfWork;
 
   public EfUnitOfWorkTests()
   {
-    _unitOfWork = new(_contextMock.Object, _loggerFactoryMock.Object);
+    _unitOfWork = new(_contextMock.Object, _loggerMock.Object, _loggerFactoryMock.Object);
   }
 
   [Fact]
@@ -66,7 +67,19 @@ public class EfUnitOfWorkTests
       .Setup(x => x.DisposeAsync())
       .Throws(new Exception());
 
-    var action = _unitOfWork.DisposeAsync;
+    var action = async () => await _unitOfWork.DisposeAsync();
+
+    action.Should().NotThrowAsync();
+  }
+
+  [Fact]
+  public void Dispose_WhenExceptionIsThrown_ItShouldBeCaught()
+  {
+    _contextMock
+      .Setup(x => x.Dispose())
+      .Throws(new Exception());
+
+    var action = _unitOfWork.Dispose;
 
     action.Should().NotThrow();
   }

@@ -6,4 +6,5 @@ interface IDatabaseMaintainer
   Task BuildAddressTableAsync();
   Task BuiltAliasTableAsync();
   Task BuildCommentTableAsync();
+  Task CleanupTablesAsync();
 }
