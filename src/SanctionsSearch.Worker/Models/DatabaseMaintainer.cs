@@ -20,6 +20,8 @@ class DatabaseMaintainer(
 
     csv.Context.RegisterClassMap<SdnMap>();
     csv.Context.RegisterClassMap<AddressMap>();
+    csv.Context.RegisterClassMap<AliasMap>();
+    csv.Context.RegisterClassMap<CommentMap>();
 
     _streamReaders.Add(reader);
     _csvReaders.Add(csv);
@@ -77,14 +79,62 @@ class DatabaseMaintainer(
     await _unitOfWork.SaveChangesAsync();
   }
 
-  public Task BuildCommentTableAsync()
+  public async Task BuiltAliasTableAsync()
   {
-    throw new NotImplementedException();
+    var result = await _ofacFileService.GetAltNamesFileAsync();
+
+    if (result.IsFailed)
+    {
+      _logger.LogError("Failed to get Alias file from OFAC.");
+      return;
+    }
+
+    using var stream = result.Value;
+    var records = GetRecordsFromStream<Alias>(stream);
+
+    foreach (var record in records)
+    {
+      var sdn = await _unitOfWork.Sdns.Find(s => s.Id == record.SdnId);
+
+      if (sdn.Count() is 0)
+      {
+        _logger.LogWarning("Alias's SDN with ID {Id} not found. Skipping alias.", record.SdnId);
+        continue;
+      }
+
+      await _unitOfWork.Aliases.Upsert(record);
+    }
+
+    await _unitOfWork.SaveChangesAsync();
   }
 
-  public Task BuiltAliasTableAsync()
+  public async Task BuildCommentTableAsync()
   {
-    throw new NotImplementedException();
+    var result = await _ofacFileService.GetCommentsFileAsync();
+
+    if (result.IsFailed)
+    {
+      _logger.LogError("Failed to get Comment file from OFAC.");
+      return;
+    }
+
+    using var stream = result.Value;
+    var records = GetRecordsFromStream<Comment>(stream);
+
+    foreach (var record in records)
+    {
+      var sdn = await _unitOfWork.Sdns.Find(s => s.Id == record.SdnId);
+
+      if (sdn.Count() is 0)
+      {
+        _logger.LogWarning("Comment's SDN with ID {Id} not found. Skipping comment.", record.SdnId);
+        continue;
+      }
+
+      await _unitOfWork.Comments.Upsert(record);
+    }
+
+    await _unitOfWork.SaveChangesAsync();
   }
 
   public void Dispose()
