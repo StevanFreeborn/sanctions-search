@@ -14,7 +14,7 @@ class Program
       .Enrich.WithThreadId()
       .Enrich.WithExceptionDetails()
       .Enrich.FromLogContext()
-      .MinimumLevel.Debug()
+      .MinimumLevel.Information()
       .WriteTo.Console()
       .WriteTo.File(new CompactJsonFormatter(), "logs/log.json", rollingInterval: RollingInterval.Day)
       .CreateLogger();
@@ -65,7 +65,10 @@ class Program
     builder.Services.AddScoped(rs => rs.GetRequiredService<IOptionsSnapshot<DbOptions>>().Value);
 
     builder.Services.AddSingleton(TimeProvider.System);
-    // builder.Services.AddScoped<IOfacFileService, OfacFileService>();
+
+    builder.Services
+      .AddHttpClient<IOfacFileService, OfacFileService>()
+      .AddStandardResilienceHandler();
 
     builder.Services.AddScoped<ISdnRepository, SdnRepository>();
     builder.Services.AddScoped<IAddressRepository, AddressRepository>();
@@ -74,7 +77,8 @@ class Program
     builder.Services.AddScoped<IUnitOfWork, EfUnitOfWork>();
     builder.Services.AddDbContext<DbContext, AppDbContext>();
 
-    builder.Services.AddHostedService<Worker>();
+    builder.Services.AddScoped<IDatabaseMaintainer, DatabaseMaintainer>();
+    builder.Services.AddHostedService<DatabaseWorker>();
 
     return builder;
   }

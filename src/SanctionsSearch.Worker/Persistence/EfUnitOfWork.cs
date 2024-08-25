@@ -1,6 +1,6 @@
 namespace SanctionsSearch.Worker.Persistence;
 
-class EfUnitOfWork(DbContext context, ILoggerFactory loggerFactory) : IUnitOfWork, IAsyncDisposable
+class EfUnitOfWork(DbContext context, ILoggerFactory loggerFactory) : IUnitOfWork, IAsyncDisposable, IDisposable
 {
   private readonly DbContext _context = context;
   private readonly ILogger<EfUnitOfWork> _logger = loggerFactory.CreateLogger<EfUnitOfWork>();
@@ -26,6 +26,18 @@ class EfUnitOfWork(DbContext context, ILoggerFactory loggerFactory) : IUnitOfWor
     try
     {
       await _context.DisposeAsync();
+    }
+    catch (Exception ex)
+    {
+      _logger.LogError(ex, "Failed to dispose of the database context.");
+    }
+  }
+
+  public void Dispose()
+  {
+    try
+    {
+      _context.Dispose();
     }
     catch (Exception ex)
     {

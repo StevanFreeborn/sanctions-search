@@ -6,6 +6,7 @@ class OfacFileService(
   OfacFileServiceOptions options
 ) : IOfacFileService
 {
+  private const string UserAgent = "SanctionsSearch.Worker";
   private readonly HttpClient _client = client ?? throw new ArgumentNullException(nameof(client));
   private readonly ILogger<OfacFileService> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
   private readonly OfacFileServiceOptions _options = options ?? throw new ArgumentNullException(nameof(options));
@@ -14,6 +15,8 @@ class OfacFileService(
     try
     {
       _logger.LogInformation("Downloading file from {FileUri}", fileUri);
+
+      _client.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
 
       var response = await _client.GetAsync(fileUri);
 

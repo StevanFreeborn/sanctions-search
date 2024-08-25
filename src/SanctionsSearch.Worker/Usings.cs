@@ -13,6 +13,7 @@ global using SanctionsSearch.Worker.Options;
 global using SanctionsSearch.Worker.Persistence;
 global using SanctionsSearch.Worker.Services;
 global using SanctionsSearch.Worker.Setup;
+global using SanctionsSearch.Worker.Workers;
 
 global using Serilog;
 global using Serilog.Exceptions;

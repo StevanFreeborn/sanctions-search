@@ -9,14 +9,24 @@ class DatabaseMaintainer(
   private readonly IUnitOfWork _unitOfWork = unitOfWork;
   private readonly IOfacFileService _ofacFileService = ofacFileService;
   private readonly ILogger<DatabaseMaintainer> _logger = logger;
-  private readonly CsvConfiguration _csvConfig = new(CultureInfo.InvariantCulture) { HasHeaderRecord = false };
+
   private readonly List<CsvReader> _csvReaders = [];
   private readonly List<StreamReader> _streamReaders = [];
+
+  private bool HandleReadingException(ReadingExceptionOccurredArgs args)
+  {
+    _logger.LogError(args.Exception, "Error reading CSV record at row {Row}", args.Exception.Context?.Reader?.Parser.Row);
+    return false;
+  }
 
   private IEnumerable<T> GetRecordsFromStream<T>(Stream stream)
   {
     var reader = new StreamReader(stream);
-    var csv = new CsvReader(reader, _csvConfig);
+    var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture)
+    {
+      HasHeaderRecord = false,
+      ReadingExceptionOccurred = HandleReadingException
+    });
 
     csv.Context.RegisterClassMap<SdnMap>();
     csv.Context.RegisterClassMap<AddressMap>();
@@ -31,6 +41,8 @@ class DatabaseMaintainer(
 
   public async Task BuildSdnTableAsync()
   {
+    _logger.LogInformation("Building SDN table");
+
     var result = await _ofacFileService.GetSdnFileAsync();
 
     if (result.IsFailed)
@@ -44,14 +56,19 @@ class DatabaseMaintainer(
 
     foreach (var record in records)
     {
+      _logger.LogDebug("Upserting SDN record with ID {Id}", record.Id);
       await _unitOfWork.Sdns.Upsert(record);
     }
 
     await _unitOfWork.SaveChangesAsync();
+
+    _logger.LogInformation("SDN table built");
   }
 
   public async Task BuildAddressTableAsync()
   {
+    _logger.LogInformation("Building Address table");
+
     var result = await _ofacFileService.GetAddressFileAsync();
 
     if (result.IsFailed)
@@ -73,14 +90,19 @@ class DatabaseMaintainer(
         continue;
       }
 
+      _logger.LogDebug("Upserting Address record with ID {Id}", record.Id);
       await _unitOfWork.Addresses.Upsert(record);
     }
 
     await _unitOfWork.SaveChangesAsync();
+
+    _logger.LogInformation("Address table built");
   }
 
   public async Task BuiltAliasTableAsync()
   {
+    _logger.LogInformation("Building Alias table");
+
     var result = await _ofacFileService.GetAltNamesFileAsync();
 
     if (result.IsFailed)
@@ -102,14 +124,19 @@ class DatabaseMaintainer(
         continue;
       }
 
+      _logger.LogDebug("Upserting Alias record with ID {Id}", record.Id);
       await _unitOfWork.Aliases.Upsert(record);
     }
 
     await _unitOfWork.SaveChangesAsync();
+
+    _logger.LogInformation("Alias table built");
   }
 
   public async Task BuildCommentTableAsync()
   {
+    _logger.LogInformation("Building Comment table");
+
     var result = await _ofacFileService.GetCommentsFileAsync();
 
     if (result.IsFailed)
@@ -131,10 +158,13 @@ class DatabaseMaintainer(
         continue;
       }
 
+      _logger.LogDebug("Upserting Comment record with ID {Id}", record.Id);
       await _unitOfWork.Comments.Upsert(record);
     }
 
     await _unitOfWork.SaveChangesAsync();
+
+    _logger.LogInformation("Comment table built");
   }
 
   public void Dispose()
