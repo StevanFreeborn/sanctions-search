@@ -1,6 +1,6 @@
 namespace SanctionsSearch.Worker.Tests.Integration;
 
-public class DatabaseMaintainerTests : DatabaseTest
+public class DatabaseMaintainerTests : DatabaseTest, IDisposable
 {
   private const string TestSdnCsv = """
     6906,"AL-IRAQI, Abd al-Hadi","individual","SDGT",-0- ,-0- ,-0- ,-0- ,-0- ,-0- ,-0- ,"DOB 1961; POB Mosul, Iraq; nationality Iraq; Gender Male."
@@ -278,5 +278,13 @@ public class DatabaseMaintainerTests : DatabaseTest
         Sdn = sdn
       }
     });
+  }
+
+  public void Dispose()
+  {
+    _databaseMaintainer.Dispose();
+    _mockHttp.Dispose();
+
+    GC.SuppressFinalize(this);
   }
 }

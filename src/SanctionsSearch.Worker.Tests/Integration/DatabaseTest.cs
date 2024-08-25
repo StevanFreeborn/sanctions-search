@@ -25,6 +25,7 @@ public class DatabaseTest : IAsyncLifetime
   public virtual async Task DisposeAsync()
   {
     await _appDbContext.DisposeAsync();
+    _loggerFactory.Dispose();
 
     SqliteConnection.ClearAllPools();
 

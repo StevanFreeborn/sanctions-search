@@ -2,14 +2,14 @@ namespace SanctionsSearch.Worker.Tests.Unit;
 
 public class CommentRepositoryTests
 {
-  private readonly Mock<DbContext> _context = new();
-  private readonly Mock<ILogger<CommentRepository>> _logger = new();
+  private readonly Mock<DbContext> _contextMock = new();
+  private readonly Mock<ILogger<CommentRepository>> _loggerMock = new();
   private readonly CommentFaker _faker = new();
   private readonly CommentRepository _repository;
 
   public CommentRepositoryTests()
   {
-    _repository = new CommentRepository(_context.Object, _logger.Object);
+    _repository = new CommentRepository(_contextMock.Object, _loggerMock.Object);
   }
 
   [Fact]
@@ -22,13 +22,13 @@ public class CommentRepositoryTests
       .Setup(x => x.FindAsync(entity.Id))
       .Throws<Exception>();
 
-    _context
+    _contextMock
       .Setup(x => x.Set<Comment>())
       .Returns(mockSet.Object);
 
     await _repository.Upsert(entity);
 
-    _logger.Verify(
+    _loggerMock.Verify(
       x => x.Log(
         LogLevel.Error,
         It.IsAny<EventId>(),
@@ -42,7 +42,7 @@ public class CommentRepositoryTests
   [Fact]
   public async Task Find_WhenExceptionIsThrown_ItShouldReturnEmptyListAndLogError()
   {
-    _context
+    _contextMock
       .Setup(x => x.Set<Comment>())
       .Throws<Exception>();
 
@@ -50,7 +50,7 @@ public class CommentRepositoryTests
 
     result.Should().BeEmpty();
 
-    _logger.Verify(
+    _loggerMock.Verify(
       x => x.Log(
         LogLevel.Error,
         It.IsAny<EventId>(),

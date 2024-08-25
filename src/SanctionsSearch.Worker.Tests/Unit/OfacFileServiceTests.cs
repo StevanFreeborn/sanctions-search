@@ -1,6 +1,6 @@
 namespace SanctionsSearch.Worker.Tests.Unit;
 
-public class OfacFileServiceTests
+public class OfacFileServiceTests : IDisposable
 {
   private const string TestCsv = "Name,Address\nJohn Doe,123 Main St\n";
   private static Stream TestStream => new MemoryStream(Encoding.UTF8.GetBytes(TestCsv));
@@ -285,5 +285,12 @@ public class OfacFileServiceTests
     var result = await _service.GetConCommentsFileAsync();
 
     result.IsFailed.Should().BeTrue();
+  }
+
+  public void Dispose()
+  {
+    _mockHttp.Dispose();
+
+    GC.SuppressFinalize(this);
   }
 }

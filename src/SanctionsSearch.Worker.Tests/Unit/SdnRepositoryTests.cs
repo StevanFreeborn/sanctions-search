@@ -2,14 +2,14 @@ namespace SanctionsSearch.Worker.Tests.Unit;
 
 public class SdnRepositoryTests
 {
-  private readonly Mock<DbContext> _context = new();
-  private readonly Mock<ILogger<SdnRepository>> _logger = new();
+  private readonly Mock<DbContext> _contextMock = new();
+  private readonly Mock<ILogger<SdnRepository>> _loggerMock = new();
   private readonly SdnFaker _faker = new();
   private readonly SdnRepository _repository;
 
   public SdnRepositoryTests()
   {
-    _repository = new SdnRepository(_context.Object, _logger.Object);
+    _repository = new SdnRepository(_contextMock.Object, _loggerMock.Object);
   }
 
   [Fact]
@@ -22,13 +22,13 @@ public class SdnRepositoryTests
       .Setup(x => x.FindAsync(entity.Id))
       .Throws<Exception>();
 
-    _context
+    _contextMock
       .Setup(x => x.Set<Sdn>())
       .Returns(mockSet.Object);
 
     await _repository.Upsert(entity);
 
-    _logger.Verify(
+    _loggerMock.Verify(
       x => x.Log(
         LogLevel.Error,
         It.IsAny<EventId>(),
@@ -42,7 +42,7 @@ public class SdnRepositoryTests
   [Fact]
   public async Task Find_WhenExceptionIsThrown_ItShouldReturnEmptyListAndLogError()
   {
-    _context
+    _contextMock
       .Setup(x => x.Set<Sdn>())
       .Throws<Exception>();
 
@@ -50,7 +50,7 @@ public class SdnRepositoryTests
 
     result.Should().BeEmpty();
 
-    _logger.Verify(
+    _loggerMock.Verify(
       x => x.Log(
         LogLevel.Error,
         It.IsAny<EventId>(),

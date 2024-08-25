@@ -2,14 +2,14 @@ namespace SanctionsSearch.Worker.Tests.Unit;
 
 public class AddressRepositoryTests
 {
-  private readonly Mock<DbContext> _context = new();
-  private readonly Mock<ILogger<AddressRepository>> _logger = new();
+  private readonly Mock<DbContext> _contextMock = new();
+  private readonly Mock<ILogger<AddressRepository>> _loggerMock = new();
   private readonly AddressFaker _faker = new();
   private readonly AddressRepository _repository;
 
   public AddressRepositoryTests()
   {
-    _repository = new AddressRepository(_context.Object, _logger.Object);
+    _repository = new AddressRepository(_contextMock.Object, _loggerMock.Object);
   }
 
   [Fact]
@@ -22,13 +22,13 @@ public class AddressRepositoryTests
       .Setup(x => x.FindAsync(entity.Id))
       .Throws<Exception>();
 
-    _context
+    _contextMock
       .Setup(x => x.Set<Address>())
       .Returns(mockSet.Object);
 
     await _repository.Upsert(entity);
 
-    _logger.Verify(
+    _loggerMock.Verify(
       x => x.Log(
         LogLevel.Error,
         It.IsAny<EventId>(),
@@ -42,7 +42,7 @@ public class AddressRepositoryTests
   [Fact]
   public async Task Find_WhenExceptionIsThrown_ItShouldReturnEmptyListAndLogError()
   {
-    _context
+    _contextMock
       .Setup(x => x.Set<Address>())
       .Throws<Exception>();
 
@@ -50,7 +50,7 @@ public class AddressRepositoryTests
 
     result.Should().BeEmpty();
 
-    _logger.Verify(
+    _loggerMock.Verify(
       x => x.Log(
         LogLevel.Error,
         It.IsAny<EventId>(),

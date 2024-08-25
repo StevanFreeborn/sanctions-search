@@ -2,14 +2,14 @@ namespace SanctionsSearch.Worker.Tests.Unit;
 
 public class AliasRepositoryTests
 {
-  private readonly Mock<DbContext> _context = new();
-  private readonly Mock<ILogger<AliasRepository>> _logger = new();
+  private readonly Mock<DbContext> _contextMock = new();
+  private readonly Mock<ILogger<AliasRepository>> _loggerMock = new();
   private readonly AliasFaker _faker = new();
   private readonly AliasRepository _repository;
 
   public AliasRepositoryTests()
   {
-    _repository = new AliasRepository(_context.Object, _logger.Object);
+    _repository = new AliasRepository(_contextMock.Object, _loggerMock.Object);
   }
 
   [Fact]
@@ -22,13 +22,13 @@ public class AliasRepositoryTests
       .Setup(x => x.FindAsync(entity.Id))
       .Throws<Exception>();
 
-    _context
+    _contextMock
       .Setup(x => x.Set<Alias>())
       .Returns(mockSet.Object);
 
     await _repository.Upsert(entity);
 
-    _logger.Verify(
+    _loggerMock.Verify(
       x => x.Log(
         LogLevel.Error,
         It.IsAny<EventId>(),
@@ -42,7 +42,7 @@ public class AliasRepositoryTests
   [Fact]
   public async Task Find_WhenExceptionIsThrown_ItShouldReturnEmptyListAndLogError()
   {
-    _context
+    _contextMock
       .Setup(x => x.Set<Alias>())
       .Throws<Exception>();
 
@@ -50,7 +50,7 @@ public class AliasRepositoryTests
 
     result.Should().BeEmpty();
 
-    _logger.Verify(
+    _loggerMock.Verify(
       x => x.Log(
         LogLevel.Error,
         It.IsAny<EventId>(),
