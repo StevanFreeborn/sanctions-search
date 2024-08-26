@@ -64,6 +64,9 @@ class Program
     builder.Services.ConfigureOptions<DbOptionsSetup>();
     builder.Services.AddScoped(rs => rs.GetRequiredService<IOptionsSnapshot<DbOptions>>().Value);
 
+    builder.Services.ConfigureOptions<OnspringOptionsSetup>();
+    builder.Services.AddScoped(rs => rs.GetRequiredService<IOptionsSnapshot<OnspringOptions>>().Value);
+
     builder.Services.AddSingleton(TimeProvider.System);
 
     builder.Services

@@ -17,7 +17,7 @@ public class DatabaseWorker(
 
     await UpdateDatabase();
 
-    using var scope = _serviceScopeFactory.CreateScope();
+    using var scope = _serviceScopeFactory.CreateAsyncScope();
     var dbOptions = scope.ServiceProvider.GetRequiredService<DbOptions>();
 
     _timer = _timeProvider.CreateTimer(
@@ -40,10 +40,14 @@ public class DatabaseWorker(
   public void Dispose()
   {
     _timer?.Dispose();
+
+    GC.SuppressFinalize(this);
   }
 
   private async Task UpdateDatabase()
   {
+    var updateIdProperty = LogContext.PushProperty("DatabaseUpdateId", Guid.NewGuid());
+
     _logger.LogInformation("Updating database");
 
     try
@@ -62,6 +66,10 @@ public class DatabaseWorker(
     catch (Exception ex)
     {
       _logger.LogError(ex, "Error updating database");
+    }
+    finally
+    {
+      updateIdProperty.Dispose();
     }
   }
 }

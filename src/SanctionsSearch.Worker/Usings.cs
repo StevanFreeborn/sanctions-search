@@ -16,6 +16,7 @@ global using SanctionsSearch.Worker.Setup;
 global using SanctionsSearch.Worker.Workers;
 
 global using Serilog;
+global using Serilog.Context;
 global using Serilog.Exceptions;
 global using Serilog.Formatting.Compact;
 
