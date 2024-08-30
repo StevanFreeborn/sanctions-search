@@ -2,36 +2,36 @@ namespace SanctionsSearch.Worker.Options;
 
 class OnspringOptions
 {
-  public string BaseUrl { get; set; } = "https://api.onspring.com";
-  public string ApiKey { get; set; } = string.Empty;
-  public int SearchIntervalInMinutes { get; set; } = 1;
-  public SearchRequestOptions SearchRequestOptions { get; set; } = new SearchRequestOptions();
-  public SearchResultOptions SearchResultOptions { get; set; } = new SearchResultOptions();
+  public string BaseUrl { get; init; } = "https://api.onspring.com";
+  public string ApiKey { get; init; } = string.Empty;
+  public int SearchIntervalInMinutes { get; init; } = 1;
+  public SearchRequestOptions SearchRequestOptions { get; init; } = new SearchRequestOptions();
+  public SearchResultOptions SearchResultOptions { get; init; } = new SearchResultOptions();
 }
 
 class SearchRequestOptions
 {
-  public int AppId { get; set; }
-  public int NameFieldId { get; set; }
-  public int AddressFieldId { get; set; }
-  public int CityFieldId { get; set; }
-  public int StateFieldId { get; set; }
-  public int ZipFieldId { get; set; }
-  public int CountryFieldId { get; set; }
-  public int StatusFieldId { get; set; }
-  public Guid AwaitingProcessingStatusId { get; set; }
-  public Guid ProcessingStatusId { get; set; }
-  public Guid ProcessedSuccessStatusId { get; set; }
-  public Guid ProcessedErrorStatusId { get; set; }
-  public int ErrorFieldId { get; set; }
+  public int AppId { get; init; }
+  public int NameFieldId { get; init; }
+  public int AddressFieldId { get; init; }
+  public int CityFieldId { get; init; }
+  public int StateFieldId { get; init; }
+  public int ZipFieldId { get; init; }
+  public int CountryFieldId { get; init; }
+  public int StatusFieldId { get; init; }
+  public Guid AwaitingProcessingStatusId { get; init; }
+  public Guid ProcessingStatusId { get; init; }
+  public Guid ProcessedSuccessStatusId { get; init; }
+  public Guid ProcessedErrorStatusId { get; init; }
+  public int ErrorFieldId { get; init; }
 }
 
 class SearchResultOptions
 {
-  public int AppId { get; set; }
-  public int SearchRequestFieldId { get; set; }
-  public int NameFieldId { get; set; }
-  public int AddressFieldId { get; set; }
-  public int TypeFieldId { get; set; }
-  public int ProgramsFieldId { get; set; }
+  public int AppId { get; init; }
+  public int SearchRequestFieldId { get; init; }
+  public int NameFieldId { get; init; }
+  public int AddressFieldId { get; init; }
+  public int TypeFieldId { get; init; }
+  public int ProgramsFieldId { get; init; }
 }
