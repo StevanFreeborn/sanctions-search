@@ -73,6 +73,14 @@ class Program
       .AddHttpClient<IOfacFileService, OfacFileService>()
       .AddStandardResilienceHandler();
 
+    builder.Services
+      .AddHttpClient<IOnspringService, OnspringService>((sp, client) =>
+      {
+        var options = sp.GetRequiredService<OnspringOptions>();
+        client.BaseAddress = new Uri(options.BaseUrl);
+      })
+      .AddStandardResilienceHandler();
+
     builder.Services.AddScoped<ISdnRepository, SdnRepository>();
     builder.Services.AddScoped<IAddressRepository, AddressRepository>();
     builder.Services.AddScoped<IAliasRepository, AliasRepository>();
