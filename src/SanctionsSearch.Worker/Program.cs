@@ -69,17 +69,18 @@ class Program
 
     builder.Services.AddSingleton(TimeProvider.System);
 
-    builder.Services
-      .AddHttpClient<IOfacFileService, OfacFileService>()
-      .AddStandardResilienceHandler();
+    builder.Services.AddHttpClient();
+    builder.Services.ConfigureHttpClientDefaults(builder => builder.AddStandardResilienceHandler());
+    builder.Services.AddScoped<IOnspringClient>(sp =>
+    {
+      var options = sp.GetRequiredService<OnspringOptions>();
+      var httpClient = sp.GetRequiredService<HttpClient>();
+      httpClient.BaseAddress = new Uri(options.BaseUrl);
+      return new OnspringClient(options.ApiKey, httpClient);
+    });
 
-    builder.Services
-      .AddHttpClient<IOnspringService, OnspringService>((sp, client) =>
-      {
-        var options = sp.GetRequiredService<OnspringOptions>();
-        client.BaseAddress = new Uri(options.BaseUrl);
-      })
-      .AddStandardResilienceHandler();
+    builder.Services.AddScoped<IOfacFileService, OfacFileService>();
+    builder.Services.AddScoped<IOnspringService, OnspringService>();
 
     builder.Services.AddScoped<ISdnRepository, SdnRepository>();
     builder.Services.AddScoped<IAddressRepository, AddressRepository>();
