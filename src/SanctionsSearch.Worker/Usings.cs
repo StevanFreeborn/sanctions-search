@@ -2,6 +2,7 @@ global using System.Collections.Concurrent;
 global using System.Globalization;
 global using System.Linq.Expressions;
 global using System.Reflection;
+global using System.Text;
 
 global using CsvHelper;
 global using CsvHelper.Configuration;

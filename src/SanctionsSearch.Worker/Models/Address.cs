@@ -12,6 +12,33 @@ class Address : Entity
 
   public override string ToString()
   {
-    return $"{StreetAddress}, {CityProvincePostal}, {Country}";
+    var address = new StringBuilder();
+
+    if (string.IsNullOrWhiteSpace(StreetAddress) is false)
+    {
+      address.Append(StreetAddress);
+    }
+
+    if (string.IsNullOrWhiteSpace(CityProvincePostal) is false)
+    {
+      if (address.Length > 0)
+      {
+        address.Append(", ");
+      }
+
+      address.Append(CityProvincePostal);
+    }
+
+    if (string.IsNullOrWhiteSpace(Country) is false)
+    {
+      if (address.Length > 0)
+      {
+        address.Append(", ");
+      }
+
+      address.Append(Country);
+    }
+
+    return address.ToString();
   }
 }

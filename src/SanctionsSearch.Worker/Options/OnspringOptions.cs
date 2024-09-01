@@ -13,11 +13,6 @@ class SearchRequestOptions
 {
   public int AppId { get; init; }
   public int NameFieldId { get; init; }
-  public int AddressFieldId { get; init; }
-  public int CityFieldId { get; init; }
-  public int StateFieldId { get; init; }
-  public int ZipFieldId { get; init; }
-  public int CountryFieldId { get; init; }
   public int StatusFieldId { get; init; }
   public Guid AwaitingProcessingStatusId { get; init; }
   public Guid ProcessingStatusId { get; init; }

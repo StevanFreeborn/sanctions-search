@@ -13,41 +13,26 @@ class EfRepository<T> : IRepository<T> where T : Entity
 
   public async Task<IEnumerable<T>> Find(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[]? includes)
   {
-    try
-    {
-      var query = _context.Set<T>().AsQueryable();
+    var query = _context.Set<T>().AsQueryable();
 
-      if (includes is not null)
-      {
-        query = includes.Aggregate(query, (current, include) => current.Include(include));
-      }
-
-      return await query.Where(predicate).ToListAsync();
-    }
-    catch (Exception ex)
+    if (includes is not null)
     {
-      _logger.LogError(ex, "Error finding entities of type {Type}", typeof(T).Name);
-      return [];
+      query = includes.Aggregate(query, (current, include) => current.Include(include));
     }
+
+    return await query.Where(predicate).ToListAsync();
   }
 
   public async Task Upsert(T entity)
   {
-    try
-    {
-      var existing = await _context.Set<T>().FindAsync(entity.Id);
+    var existing = await _context.Set<T>().FindAsync(entity.Id);
 
-      if (existing is null)
-      {
-        await _context.Set<T>().AddAsync(entity);
-        return;
-      }
-
-      _context.Entry(existing).CurrentValues.SetValues(entity);
-    }
-    catch (Exception ex)
+    if (existing is null)
     {
-      _logger.LogError(ex, "Error upserting entity of type {Type} with {Id}", typeof(T).Name, entity.Id);
+      await _context.Set<T>().AddAsync(entity);
+      return;
     }
+
+    _context.Entry(existing).CurrentValues.SetValues(entity);
   }
 }

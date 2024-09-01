@@ -15,37 +15,16 @@ class EfUnitOfWork(
 
   public async Task SaveChangesAsync()
   {
-    try
-    {
-      await _context.SaveChangesAsync();
-    }
-    catch (DbUpdateException ex)
-    {
-      _logger.LogError(ex, "Failed to save changes to the database.");
-    }
+    await _context.SaveChangesAsync();
   }
 
   public async ValueTask DisposeAsync()
   {
-    try
-    {
-      await _context.DisposeAsync();
-    }
-    catch (Exception ex)
-    {
-      _logger.LogError(ex, "Failed to dispose of the database context.");
-    }
+    await _context.DisposeAsync();
   }
 
   public void Dispose()
   {
-    try
-    {
-      _context.Dispose();
-    }
-    catch (Exception ex)
-    {
-      _logger.LogError(ex, "Failed to dispose of the database context.");
-    }
+    _context.Dispose();
   }
 }

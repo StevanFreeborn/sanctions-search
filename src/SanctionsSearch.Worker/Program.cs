@@ -81,6 +81,7 @@ class Program
 
     builder.Services.AddScoped<IOfacFileService, OfacFileService>();
     builder.Services.AddScoped<IOnspringService, OnspringService>();
+    builder.Services.AddScoped<ISearchService, SearchService>();
 
     builder.Services.AddScoped<ISdnRepository, SdnRepository>();
     builder.Services.AddScoped<IAddressRepository, AddressRepository>();
@@ -91,6 +92,7 @@ class Program
 
     builder.Services.AddScoped<IDatabaseMaintainer, DatabaseMaintainer>();
     builder.Services.AddHostedService<DatabaseWorker>();
+    builder.Services.AddHostedService<OnspringWorker>();
 
     return builder;
   }

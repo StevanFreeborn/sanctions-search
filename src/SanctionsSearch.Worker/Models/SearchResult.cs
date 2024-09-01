@@ -1,15 +1,9 @@
 namespace SanctionsSearch.Worker.Models;
 
-class SearchResult
+class SearchResult(int searchRequestId, List<Hit> hits)
 {
-  public int SearchRequestId { get; init; }
-  public List<Hit> Hits { get; init; } = [];
-
-  public SearchResult(int searchRequestId, List<Hit> hits)
-  {
-    SearchRequestId = searchRequestId;
-    Hits = hits;
-  }
+  public int SearchRequestId { get; init; } = searchRequestId;
+  public List<Hit> Hits { get; init; } = hits;
 }
 
 class Hit

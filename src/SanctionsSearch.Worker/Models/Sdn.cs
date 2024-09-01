@@ -25,7 +25,7 @@ class Sdn : Entity
       Name = Name,
       Address = Addresses.FirstOrDefault()?.ToString() ?? string.Empty,
       Type = Type,
-      Programs = [.. Program.Split("] [")]
+      Programs = [.. Program.Split("] [")],
     };
   }
 }
