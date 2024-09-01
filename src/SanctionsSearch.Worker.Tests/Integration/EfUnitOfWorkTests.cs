@@ -11,9 +11,7 @@ public class EfUnitOfWorkTests : DatabaseTest
   public EfUnitOfWorkTests()
   {
     var loggerFactory = LoggerFactory.Create(c => c.ClearProviders());
-    var logger = loggerFactory.CreateLogger<EfUnitOfWork>();
-
-    _uow = new(_context, logger, loggerFactory);
+    _uow = new(_context, loggerFactory);
   }
 
   [Fact]
