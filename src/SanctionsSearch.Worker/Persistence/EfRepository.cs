@@ -11,11 +11,18 @@ class EfRepository<T> : IRepository<T> where T : Entity
     _logger = logger;
   }
 
-  public async Task<IEnumerable<T>> Find(Expression<Func<T, bool>> predicate)
+  public async Task<IEnumerable<T>> Find(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[]? includes)
   {
     try
     {
-      return await _context.Set<T>().Where(predicate).ToListAsync();
+      var query = _context.Set<T>().AsQueryable();
+
+      if (includes is not null)
+      {
+        query = includes.Aggregate(query, (current, include) => current.Include(include));
+      }
+
+      return await query.Where(predicate).ToListAsync();
     }
     catch (Exception ex)
     {

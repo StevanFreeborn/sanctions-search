@@ -17,4 +17,15 @@ class Sdn : Entity
   public virtual ICollection<Address> Addresses { get; set; } = [];
   public virtual ICollection<Alias> Aliases { get; set; } = [];
   public virtual ICollection<Comment> Comments { get; set; } = [];
+
+  public Hit ToHit()
+  {
+    return new Hit
+    {
+      Name = Name,
+      Address = Addresses.FirstOrDefault()?.ToString() ?? string.Empty,
+      Type = Type,
+      Programs = [.. Program.Split("] [")]
+    };
+  }
 }

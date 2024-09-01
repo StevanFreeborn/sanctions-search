@@ -9,4 +9,9 @@ class Address : Entity
   public string Remarks { get; set; } = string.Empty;
 
   public virtual Sdn Sdn { get; set; } = default!;
+
+  public override string ToString()
+  {
+    return $"{StreetAddress}, {CityProvincePostal}, {Country}";
+  }
 }
