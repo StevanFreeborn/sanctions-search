@@ -48,7 +48,9 @@ The app handles configuration using environment variables or a `.env` file if ru
 
 ## Usage
 
-Currently I'm not providing a pre-built image or executable for the app. Regardless of the method you choose to run the app, you will need to clone the repository and build the app for your platform of choice.
+Because I intend this to be primarily a proof of concept app for how someone can further augment, extend, and leverage the flexibility and extensibility of Onspring to automate business processes I am currently NOT providing a pre-built image or executable for the app. It will be up to you to build and publish it for your platform then determine how to host and maintain it. You are also welcome to further modify the app to better suit your needs.
+
+Regardless of the method you choose to run the app, you will need to clone the repository and build the app for your platform of choice.
 
 ```sh
 git clone https://github.com/StevanFreeborn/sanctions-search.git
