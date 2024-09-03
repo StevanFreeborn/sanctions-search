@@ -42,7 +42,7 @@ git clone https://github.com/StevanFreeborn/sanctions-search.git
 
 ### With Docker
 
-In order to run the app with Docker, you will need to have Docker installed on your machine. You can find the [Docker Desktop here](https://www.docker.com/products/docker-desktop).
+In order to run the app with Docker, you will need to have Docker installed on your machine. You can find Docker Desktop [here](https://www.docker.com/products/docker-desktop).
 
 ```sh
 cd src/SanctionsSearch.Worker
@@ -52,7 +52,7 @@ docker run -d --name sanctions-search --env-file .env sanctions-search
 
 ### Without Docker
 
-In order to run the app without Docker, you will need to have the .NET SDK installed on your machine so that you can build and publish the app for your platform of choice. You can find the [.NET 8 SDK here](https://dotnet.microsoft.com/download/dotnet/8.0).
+In order to run the app without Docker, you will need to have the .NET SDK installed on your machine so that you can build and publish the app for your platform of choice. You can find the .NET 8 SDK [here](https://dotnet.microsoft.com/download/dotnet/8.0).
 
 #### Windows Service
 
