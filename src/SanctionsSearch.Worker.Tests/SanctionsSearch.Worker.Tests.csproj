@@ -31,7 +31,8 @@
     <CoverletOutput>./TestResults/coverage/</CoverletOutput>
     <CoverletOutputFormat>cobertura</CoverletOutputFormat>
     <Include>[SanctionsSearch.Worker]*</Include>
-    <Exclude>[SanctionsSearch.Worker]SanctionsSearch.Worker.Migrations*</Exclude>
+    <Exclude>[SanctionsSearch.Worker]SanctionsSearch.Worker.Migrations*,[SanctionsSearch.Worker]SanctionsSearch.Worker.Setup*,[SanctionsSearch.Worker]SanctionsSearch.Worker.Workers*</Exclude>
+    <ExcludeByFile>**/Program.cs</ExcludeByFile>
   </PropertyGroup>
 
   <Target Name="GenerateHtmlCoverageReport" AfterTargets="GenerateCoverageResultAfterTest">

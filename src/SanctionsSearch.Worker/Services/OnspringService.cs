@@ -105,11 +105,11 @@ class OnspringService(
                 FieldId = _options.SearchRequestOptions.StatusFieldId,
                 Value = _options.SearchRequestOptions.ProcessedErrorStatusId
               },
-              new StringFieldValue()
-              {
-                FieldId = _options.SearchRequestOptions.ErrorFieldId,
-                Value = "Unable to save all search results"
-              }
+          new StringFieldValue()
+          {
+            FieldId = _options.SearchRequestOptions.ErrorFieldId,
+            Value = "Unable to save all search results"
+          }
             ]
       }
       : new ResultRecord()
@@ -122,11 +122,11 @@ class OnspringService(
                 FieldId = _options.SearchRequestOptions.StatusFieldId,
                 Value = _options.SearchRequestOptions.ProcessedSuccessStatusId
               },
-              new StringFieldValue()
-              {
-                FieldId = _options.SearchRequestOptions.ErrorFieldId,
-                Value = string.Empty
-              }
+          new StringFieldValue()
+          {
+            FieldId = _options.SearchRequestOptions.ErrorFieldId,
+            Value = string.Empty
+          }
             ]
       };
 

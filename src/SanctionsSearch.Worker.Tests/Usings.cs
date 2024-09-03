@@ -8,12 +8,14 @@ global using FluentAssertions;
 global using Microsoft.Data.Sqlite;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Logging;
-global using Microsoft.Extensions.Options;
 
 global using Moq;
 
+global using Onspring.API.SDK.Models;
+
 global using RichardSzalay.MockHttp;
 
+global using SanctionsSearch.Worker.Extensions;
 global using SanctionsSearch.Worker.Interfaces;
 global using SanctionsSearch.Worker.Models;
 global using SanctionsSearch.Worker.Options;
