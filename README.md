@@ -92,7 +92,7 @@ WantedBy=multi-user.target
 
 #### Executable
 
-Note you can also just run the app as an executable after publishing it for your platform.
+Note you can also just run the app as an executable after publishing it for your platform using one of the commands above.
 
 ## Technologies
 
