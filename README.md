@@ -4,6 +4,20 @@
 
 SanctionsSearch is an automated solution to perform sanctions search in Onspring against the Office of Foreign Assets Control (OFAC) SDN list. The app runs as a worker service that hosts two separate worker processes. The first worker process is responsible for fetching the latest SDN list from the OFAC website and updating a local database with the latest information. The second worker process is responsible for performing sanctions search against the local database using search criteria provided by Onspring and returning the search results to Onspring.
 
+## Technologies
+
+- [C#](https://docs.microsoft.com/en-us/dotnet/csharp/) (Language)
+- [.NET](https://dotnet.microsoft.com/) (Runtime)
+- [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/) (ORM)
+- [SQLite](https://www.sqlite.org/index.html) (Database)
+- [Serilog](https://serilog.net/) (Logging)
+- [Docker](https://www.docker.com/) (Containerization)
+- [xUnit](https://xunit.net/) (Testing)
+- [Moq](https://github.com/devlooped/moq) (Mocking)
+- [MockHttp](https://github.com/richardszalay/mockhttp) (Mocking)
+- [FluentAssertions](https://fluentassertions.com/) (Assertions)
+- [Faker.Net](https://keyizhang.com/Faker.Net/) (Faker)
+
 ## Onspring Configuration
 
 TODO: Add Onspring configuration instructions.
@@ -93,16 +107,3 @@ WantedBy=multi-user.target
 #### Executable
 
 Note you can also just run the app as an executable after publishing it for your platform using one of the commands above.
-
-## Technologies
-
-- [C#](https://docs.microsoft.com/en-us/dotnet/csharp/)
-- [.NET](https://dotnet.microsoft.com/)
-- [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/)
-- [SQLite](https://www.sqlite.org/index.html)
-- [Serilog](https://serilog.net/)
-- [Docker](https://www.docker.com/)
-- [xUnit](https://xunit.net/)
-- [Moq](https://github.com/devlooped/moq)
-- [FluentAssertions](https://fluentassertions.com/)
-- [Faker.Net](https://keyizhang.com/Faker.Net/)
