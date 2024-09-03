@@ -12,9 +12,10 @@ global using FluentResults;
 global using Microsoft.Data.Sqlite;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Options;
+global using Microsoft.Extensions.Hosting.Systemd;
+global using Microsoft.Extensions.Hosting.WindowsServices;
 
 global using Onspring.API.SDK;
-global using Onspring.API.SDK.Enums;
 global using Onspring.API.SDK.Models;
 
 global using SanctionsSearch.Worker.Extensions;
