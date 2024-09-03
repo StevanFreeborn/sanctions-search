@@ -24,7 +24,7 @@ TODO: Add Onspring configuration instructions.
 
 ## SanctionsSearch Configuration
 
-The app handles configuration using a `.env` file if running with Docker or using the `appsettings.json` file if running without Docker. There are a number of configuration options many of which default values are provided, but the following are required in order for the app to run successfully:
+The app handles configuration using environment variables or a `.env` file if running with Docker or using environment variables or a `appsettings.json` file if running without Docker. There are a number of configuration options many of which default values are provided, but the following are required in order for the app to run successfully:
 
 - `OnspringOptions__ApiKey`
   - The API key for the Onspring API. Note this key needs to have all the necessary permissions to create, read, and update records in the Search Request and Search Result apps.
