@@ -16,7 +16,7 @@ class Program
       .Enrich.FromLogContext()
       .MinimumLevel.Information()
       .WriteTo.Console()
-      .WriteTo.File(new CompactJsonFormatter(), "logs/log.json", rollingInterval: RollingInterval.Day)
+      .WriteTo.File(new CompactJsonFormatter(), "Logs/log.json", rollingInterval: RollingInterval.Day)
       .CreateLogger();
 
     try
