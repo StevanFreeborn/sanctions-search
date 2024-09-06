@@ -16,11 +16,14 @@ public class OnspringWorker(
   {
     _logger.LogInformation("Onspring worker started");
 
+    using var scope = _serviceScopeFactory.CreateScope();
+    var onspringOptions = scope.ServiceProvider.GetRequiredService<OnspringOptions>();
+
     _timer = _timeProvider.CreateTimer(
       callback: async _ => await RunSearchRequests(),
       state: null,
-      dueTime: TimeSpan.Zero,
-      period: TimeSpan.FromMinutes(1)
+      dueTime: TimeSpan.FromMinutes(onspringOptions.SearchIntervalInMinutes),
+      period: TimeSpan.FromMinutes(onspringOptions.SearchIntervalInMinutes)
     );
 
     return Task.CompletedTask;
