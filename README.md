@@ -14,7 +14,7 @@ SanctionsSearch is an automated solution to perform sanctions search in Onspring
 - [Moq](https://github.com/devlooped/moq) (Mocking)
 - [MockHttp](https://github.com/richardszalay/mockhttp) (Mocking)
 - [FluentAssertions](https://fluentassertions.com/) (Assertions)
-- [Faker.Net](https://keyizhang.com/Faker.Net/) (Faker)
+- [Faker.Net](https://keyizhang.com/Faker.Net/) (Generate Fake Test Data)
 
 ## Onspring Configuration
 
